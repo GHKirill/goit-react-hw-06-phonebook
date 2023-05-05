@@ -1,13 +1,15 @@
-import PropTypes from 'prop-types';
+//import PropTypes from 'prop-types';
 import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+//import { changeFilter } from 'redux/actions';
+import { changeFilter } from '../../redux/filterSlice';
+
 import { nanoid } from 'nanoid';
 import css from './Filter.module.css';
 
-export default function Filter({ value, filter }) {
-  const handleFilter = event => {
-    // filter({ filter: event.currentTarget.value });
-    filter(event.currentTarget.value);
-  };
+export default function Filter() {
+  const inputFilter = useSelector(state => state.filter);
+  const dispatch = useDispatch();
 
   const idFilter = nanoid();
   return (
@@ -15,12 +17,15 @@ export default function Filter({ value, filter }) {
       <label htmlFor={idFilter} className={css.filterLabel}>
         Find Contact by Name
       </label>
-      <input type="text" name="filter" value={value} onChange={handleFilter} />
+
+      <input
+        type="text"
+        name="filter"
+        value={inputFilter}
+        onChange={event =>
+          dispatch(changeFilter(event.target.value.toLowerCase()))
+        }
+      />
     </form>
   );
 }
-
-Filter.propTypes = {
-  filter: PropTypes.func.isRequired,
-  value: PropTypes.string.isRequired,
-};
