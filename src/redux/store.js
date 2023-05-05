@@ -1,46 +1,41 @@
 import { configureStore } from '@reduxjs/toolkit';
-//import { contactsReducer, filterReducer } from './reducer';
+import { combineReducers } from '@reduxjs/toolkit';
 import contactsSlice from './contactsSlice';
 import filterSlice from './filterSlice';
-// import {
-//   persistStore,
-//   persistReducer,
-//   FLUSH,
-//   REHYDRATE,
-//   PAUSE,
-//   PERSIST,
-//   PURGE,
-//   REGISTER,
-// } from 'redux-persist';
-// import storage from 'redux-persist/lib/storage';
+import {
+  persistStore,
+  persistReducer,
+  FLUSH,
+  REHYDRATE,
+  PAUSE,
+  PERSIST,
+  PURGE,
+  REGISTER,
+} from 'redux-persist';
+import storage from 'redux-persist/lib/storage';
 
-// const persistConfig = {
-//   key: 'root',
-//   // version: 1,
-//   storage,
-// };
+const persistConfig = {
+  key: 'root',
+  version: 1,
+  storage,
+  blacklist: [filterSlice.reducer],
+};
 
-// const rootReducer = combineReducers({
-//   //contacts: contactsReducer,
-//   contacts: contactsSlice.reducer,
-//   filter: filterSlice.reducer,
-// });
-
-//const persistedReducer = persistReducer(persistConfig, contactsSlice.reducer);
-
-export const store = configureStore({
-  reducer: {
-    contacts: contactsSlice.reducer,
-    filter: filterSlice.reducer,
-    //contacts: persistedReducer,
-    //persistedReducer,
-  },
-  // middleware: getDefaultMiddleware =>
-  //   getDefaultMiddleware({
-  //     serializableCheck: {
-  //       ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
-  //     },
-  //   }),
+const rootReducer = combineReducers({
+  contacts: contactsSlice.reducer,
+  filter: filterSlice.reducer,
 });
 
-//export let persistor = persistStore(store);
+const persistedReducer = persistReducer(persistConfig, rootReducer);
+
+export const store = configureStore({
+  reducer: persistedReducer,
+  middleware: getDefaultMiddleware =>
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+      },
+    }),
+});
+
+export const persistor = persistStore(store);

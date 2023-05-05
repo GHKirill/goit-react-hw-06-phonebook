@@ -6,10 +6,10 @@ import { useSelector } from 'react-redux';
 export default function ContactList() {
   const contacts = useSelector(state => state.contacts);
 
-  //console.log(contacts);
+  console.log(contacts);
   const inputFilter = useSelector(state => state.filter);
 
-  if (contacts.length === 0) return;
+  //if (contacts.length === 0) return;
   return (
     <ul className={css.contactList}>
       {contacts
